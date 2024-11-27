@@ -1,3 +1,5 @@
+'use client'
+
 import {
   BadgeIcon as Certificate,
   Home,
@@ -5,7 +7,7 @@ import {
   Settings,
   Trophy,
 } from 'lucide-react'
-import { getServerSession } from 'next-auth'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -18,11 +20,10 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar'
-import { authOptions } from '@/services/auth/nextAuth/authOptions'
 
-export async function AppSidebar() {
-  const session = await getServerSession(authOptions)
-  const user = session?.user
+export function AppSidebar() {
+  const session = useSession()
+  const user = session?.data?.user
 
   if (!user) return null
 
@@ -31,7 +32,7 @@ export async function AppSidebar() {
       <SidebarHeader>
         <Link
           className="flex items-center gap-3 px-4 py-6 font-semibold"
-          href="#"
+          href="/"
         >
           <Image src={logo} alt="Logo" className="h-10 w-10 object-contain" />
           <p className="text-2xl">CertificaUTF</p>
