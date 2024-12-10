@@ -1,15 +1,14 @@
-'use client'
-
-import { useSession } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
 
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import { authOptions } from '@/services/auth/nextAuth/authOptions'
 
 import AppNotificationsMenu from './app-notification-menu'
 import AppProfileMenu from './app-profile-menu'
 
-export default function AppMenubar() {
-  const session = useSession()
-  const user = session.data?.user
+export default async function AppMenubar() {
+  const session = await getServerSession(authOptions)
+  const user = session?.user
 
   if (!user) return null
 

@@ -1,7 +1,5 @@
-'use client'
-
-import { LogOut, User } from 'lucide-react'
-import { useSession } from 'next-auth/react'
+import { User } from 'lucide-react'
+import { getServerSession } from 'next-auth'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
@@ -15,19 +13,14 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useSignOut } from '@/hooks/useSignOut'
+import { authOptions } from '@/services/auth/nextAuth/authOptions'
 
+import { AppProfileMenuLogout } from './app-profile-menu-logout'
 import { ProfileAvatar } from './profile-avatar'
 
-export default function AppProfileMenu() {
-  const session = useSession()
-  const { triggerSignOut } = useSignOut()
-
-  const user = session.data?.user
-
-  const handleSignOut = async () => {
-    triggerSignOut()
-  }
+export default async function AppProfileMenu() {
+  const session = await getServerSession(authOptions)
+  const user = session?.user
 
   if (!user) return null
   return (
@@ -61,11 +54,7 @@ export default function AppProfileMenu() {
           </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleSignOut()}>
-          <LogOut />
-          <span>Sair</span>
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <AppProfileMenuLogout />
       </DropdownMenuContent>
     </DropdownMenu>
   )

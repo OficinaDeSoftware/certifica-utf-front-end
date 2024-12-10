@@ -21,10 +21,11 @@ bun dev
 
 ## Enviroments Variables (.env.local)
 
-GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET
-
-NEXTAUTH_URL
-NEXTAUTH_SECRET
-
-NEXT_PUBLIC_API_BASE_URL
+|Variavel|Descrição|
+|:-|:-|
+|`GOOGLE_CLIENT_ID`|**Obrigatório**. Client ID utilizado para integração com o google oauth|
+|`GOOGLE_CLIENT_SECRET`|**Obrigatório**. Client Secret utilizado para integração com o google oauth |
+|`NEXTAUTH_URL`|**Obrigatório**. URL da aplicação frontend |
+|`NEXTAUTH_SECRET`|**Obrigatório**. Secret utilizado para geração do token quando logado com credentials |
+|`NEXT_PUBLIC_API_BASE_URL`|**Obrigatório**. A chave da API backend CertificaUTF  |
+|`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`|**Obrigatório**. A chave da API para integração com o google maps |

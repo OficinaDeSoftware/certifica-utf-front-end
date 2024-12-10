@@ -3,7 +3,7 @@ import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
 
 import authProviderEnum from '@/enums/authProvidersEnum'
-import { loginWithCredentials } from '@/services/api/apiServices'
+import CertificaUTF from '@/services/api/CertificaUTF/CertificaUTF'
 import logger from '@/services/winston/logger'
 
 async function authorizeCredentials(
@@ -17,8 +17,10 @@ async function authorizeCredentials(
   }
 
   try {
+    const fetchAPI = new CertificaUTF()
+
     const { sucess: user, error: errorLoginWithCredentials } =
-      await loginWithCredentials(
+      await fetchAPI.loginWithCredentials(
         authProviderEnum.CREDENTIALS,
         userRa,
         userPassword
