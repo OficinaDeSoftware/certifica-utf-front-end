@@ -1,5 +1,3 @@
-'use client'
-
 import {
   BadgeIcon as Certificate,
   Home,
@@ -7,7 +5,7 @@ import {
   Settings,
   Trophy,
 } from 'lucide-react'
-import { useSession } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -20,10 +18,11 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar'
+import { authOptions } from '@/services/auth/nextAuth/authOptions'
 
-export function AppSidebar() {
-  const session = useSession()
-  const user = session?.data?.user
+export async function AppSidebar() {
+  const session = await getServerSession(authOptions)
+  const user = session?.user
 
   if (!user) return null
 
@@ -32,7 +31,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <Link
           className="flex items-center gap-3 px-4 py-6 font-semibold"
-          href="/"
+          href="#"
         >
           <Image src={logo} alt="Logo" className="h-10 w-10 object-contain" />
           <p className="text-2xl">CertificaUTF</p>
@@ -42,7 +41,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="#" className="px-7">
+              <Link href="/" className="px-7">
                 <Home className="h-4 w-4" />
                 <span>Home</span>
               </Link>
@@ -50,7 +49,7 @@ export function AppSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="#" className="px-7">
+              <Link href="/event/list" className="px-7">
                 <Trophy className="h-4 w-4" />
                 <span>Eventos</span>
               </Link>

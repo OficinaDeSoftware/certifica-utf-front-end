@@ -43,6 +43,7 @@ export default function LoginForm() {
 
   if (success) {
     router.push('/')
+    router.refresh()
   }
 
   return (

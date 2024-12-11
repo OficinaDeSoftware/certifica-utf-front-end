@@ -5,9 +5,8 @@ import { Account, CallbacksOptions, User as UserNextAuth } from 'next-auth'
 import { AdapterUser } from 'next-auth/adapters'
 
 import authProviderEnum from '@/enums/authProvidersEnum'
-import { loginWithGoogle } from '@/services/api/apiServices'
+import CertificaUTF from '@/services/api/CertificaUTF/CertificaUTF'
 import logger from '@/services/winston/logger'
-import IUserDto from '@/types/IUserDto'
 import { sessionUser } from '@/types/next-auth'
 
 type ISignInCallback = (
@@ -24,8 +23,10 @@ const signInWithGoogle: ISignInCallback = async (
 
     if (!account.id_token) return false
 
+    const fetchAPI = new CertificaUTF()
+
     const { sucess: userGoogle, error: errorLoginWithGoogle } =
-      await loginWithGoogle(authProviderEnum.GOOGLE, account.id_token)
+      await fetchAPI.loginWithGoogle(authProviderEnum.GOOGLE, account.id_token)
 
     if (!userGoogle) {
       throw errorLoginWithGoogle
