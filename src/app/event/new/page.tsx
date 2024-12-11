@@ -3,30 +3,40 @@
 import * as React from 'react'
 import { useState } from 'react'
 
-import IEventDto from '@/types/IEventDto'
+import IEvent from '@/types/IEvent'
 
 import StepContent from './_components/StepContent'
 import StepNavigation from './_components/StepNavigation'
 import StepProgress from './_components/StepProgress'
 
+const TOTAL_STEPS = 3
+
 export default function CreateEvent() {
   const [currentStep, setCurrentStep] = useState(1)
-  const totalSteps = 3
-  const [formData, setFormData] = useState<IEventDto>({
-    idEvent: '',
+  const [formData, setFormData] = useState<IEvent>({
+    id: '',
     name: '',
-    dateStart: '',
-    dateEnd: '',
+    initialDate: '',
+    finalDate: '',
     workload: 0,
-    informations: '',
-    nrUuidAccountable: '',
-    participants: [],
-    dates: [],
+    description: '',
+    location: {
+      description: '',
+      latitude: 0,
+      longitude: 0,
+      latitudeDelta: 0,
+      longitudeDelta: 0,
+      mapUrl: '',
+    },
+    eventDates: [],
+    image: '',
+    participants: 0,
+    avaliation: 0,
   })
 
-  const handleStepSubmit = (data: IEventDto) => {
+  const handleStepSubmit = (data: IEvent) => {
     setFormData((prev) => ({ ...prev, ...data }))
-    if (currentStep < totalSteps) {
+    if (currentStep < TOTAL_STEPS) {
       setCurrentStep((prev) => prev + 1)
     }
   }
@@ -42,7 +52,7 @@ export default function CreateEvent() {
           <p className="text-3xl font-semibold">Criar eventos</p>
         </div>
 
-        <StepProgress currentStep={currentStep} totalSteps={totalSteps} />
+        <StepProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
 
         <StepContent
           currentStep={currentStep}
@@ -52,7 +62,7 @@ export default function CreateEvent() {
 
         <StepNavigation
           currentStep={currentStep}
-          totalSteps={totalSteps}
+          totalSteps={TOTAL_STEPS}
           onPrevious={handlePrevious}
         />
       </div>

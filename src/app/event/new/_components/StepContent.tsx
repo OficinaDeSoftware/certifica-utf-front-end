@@ -1,11 +1,11 @@
-import IEventDto from '@/types/IEventDto'
+import IEvent from '@/types/IEvent'
 
 import GeneralData from './StepsForm/GeneralData'
 
 type StepProgressProps = {
   currentStep: number
-  formData: IEventDto
-  onStepSubmit: (data: IEventDto) => void
+  formData: IEvent
+  onStepSubmit: (data: IEvent) => void
 }
 
 export default function StepContent({

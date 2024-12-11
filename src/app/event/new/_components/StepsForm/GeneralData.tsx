@@ -21,18 +21,18 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import IEventDto from '@/types/IEventDto'
+import IEvent from '@/types/IEvent'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 type GeneralDataProps = {
-  formData: IEventDto
-  handleStepSubmit: (data: IEventDto) => void
+  formData: IEvent
+  handleStepSubmit: (data: IEvent) => void
 }
 
 const generalDataSchema = z.object({
   name: z.string().min(1, 'Nome do evento é obrigatório'),
-  dateStart: z.date({ required_error: 'Data de inicio é obrigatória' }),
-  dateEnd: z.date({ required_error: 'Data de fim é obrigatória' }),
+  initialDate: z.date({ required_error: 'Data de inicio é obrigatória' }),
+  finalDate: z.date({ required_error: 'Data de fim é obrigatória' }),
   // workload: z.number().min(1, 'Carga horária é obrigatória'),
   // dates: z.array(
   //   z.object({ date: z.date(), startTime: z.string(), endTime: z.string() })
@@ -70,7 +70,7 @@ export default function GeneralData(props: GeneralDataProps) {
         <div className="flex gap-4">
           <FormField
             control={form.control}
-            name="dateStart"
+            name="initialDate"
             render={({ field }) => (
               <FormItem className="flex w-1/2 flex-col">
                 <FormLabel>Data de início</FormLabel>
@@ -111,7 +111,7 @@ export default function GeneralData(props: GeneralDataProps) {
           />
           <FormField
             control={form.control}
-            name="dateEnd"
+            name="finalDate"
             render={({ field }) => (
               <FormItem className="flex w-1/2 flex-col">
                 <FormLabel>Data de encerramento</FormLabel>
