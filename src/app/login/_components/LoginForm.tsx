@@ -62,11 +62,7 @@ export default function LoginForm() {
               <FormItem>
                 <FormLabel>Ra</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="ex: a9999999"
-                    {...field}
-                    className="h-11"
-                  />
+                  <Input placeholder="ex: a9999999" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -80,7 +76,7 @@ export default function LoginForm() {
               <FormItem>
                 <FormLabel>Senha</FormLabel>
                 <FormControl>
-                  <Input {...field} type="password" className="h-11" />
+                  <Input {...field} type="password" />
                 </FormControl>
                 <FormMessage />
                 {error && <p className="text-destructive">{error}</p>}

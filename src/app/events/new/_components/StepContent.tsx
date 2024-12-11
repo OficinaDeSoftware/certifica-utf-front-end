@@ -1,10 +1,24 @@
-type StepProgressProps = { currentStep: number }
+import IEventDto from '@/types/IEventDto'
 
-export default function StepContent({ currentStep }: StepProgressProps) {
+import GeneralData from './StepsForm/GeneralData'
+
+type StepProgressProps = {
+  currentStep: number
+  formData: IEventDto
+  onStepSubmit: (data: IEventDto) => void
+}
+
+export default function StepContent({
+  currentStep,
+  formData,
+  onStepSubmit,
+}: StepProgressProps) {
   const renderTabComponent = () => {
     switch (currentStep) {
       case 1:
-        return <div>Tab 1</div>
+        return (
+          <GeneralData formData={formData} handleStepSubmit={onStepSubmit} />
+        )
       case 2:
         return <div>Tab 2</div>
       case 3:

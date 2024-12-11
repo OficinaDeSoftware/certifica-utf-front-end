@@ -1,5 +1,3 @@
-'use client' // Interatividade necessária para os botões
-
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -7,14 +5,12 @@ import { Button } from '@/components/ui/button'
 type StepNavigationProps = {
   currentStep: number
   totalSteps: number
-  onNext: () => void
   onPrevious: () => void
 }
 
 export default function StepNavigation({
   currentStep,
   totalSteps,
-  onNext,
   onPrevious,
 }: StepNavigationProps) {
   return (
@@ -26,7 +22,12 @@ export default function StepNavigation({
         </Button>
       )}
       {currentStep < totalSteps && (
-        <Button size="lg" className="min-h-12" onClick={onNext}>
+        <Button
+          form="general-data"
+          type="submit"
+          size="lg"
+          className="min-h-12"
+        >
           Próximo <ChevronRight />
         </Button>
       )}
