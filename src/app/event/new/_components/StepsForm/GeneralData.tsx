@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 
-import { format } from 'date-fns'
+import { format, parse } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
 import { z } from 'zod'
 
@@ -29,15 +30,27 @@ type GeneralDataProps = {
   handleStepSubmit: (data: IEvent) => void
 }
 
-const generalDataSchema = z.object({
-  name: z.string().min(1, 'Nome do evento é obrigatório'),
-  initialDate: z.date({ required_error: 'Data de inicio é obrigatória' }),
-  finalDate: z.date({ required_error: 'Data de fim é obrigatória' }),
-  // workload: z.number().min(1, 'Carga horária é obrigatória'),
-  // dates: z.array(
-  //   z.object({ date: z.date(), startTime: z.string(), endTime: z.string() })
-  // ),
-})
+const generalDataSchema = z
+  .object({
+    name: z.string().min(1, 'Nome do evento é obrigatório'),
+    initialDate: z.string().refine((value) => !isNaN(Date.parse(value)), {
+      message: 'Data de início inválida',
+    }),
+    finalDate: z.string().refine((value) => !isNaN(Date.parse(value)), {
+      message: 'Data de fim inválida',
+    }),
+  })
+  .refine(
+    (data) => Date.parse(data.initialDate) <= Date.parse(data.finalDate),
+    {
+      message: 'A data de início deve ser anterior ou igual à data de fim',
+      path: ['finalDate'],
+    }
+  )
+  .refine((data) => Date.parse(data.initialDate) >= Date.now(), {
+    message: 'A data de início não pode ser no passado',
+    path: ['initialDate'],
+  })
 
 export default function GeneralData(props: GeneralDataProps) {
   const { formData, handleStepSubmit } = props
@@ -46,6 +59,9 @@ export default function GeneralData(props: GeneralDataProps) {
     resolver: zodResolver(generalDataSchema),
     defaultValues: formData,
   })
+
+  const parseDate = (date: string) =>
+    date ? parse(date, 'yyyy-MM-dd', new Date()) : undefined
 
   return (
     <Form {...form}>
@@ -85,9 +101,11 @@ export default function GeneralData(props: GeneralDataProps) {
                         )}
                       >
                         {field.value ? (
-                          format(field.value, 'PPP')
+                          format(parseDate(field.value)!, 'PPP', {
+                            locale: ptBR,
+                          })
                         ) : (
-                          <span>DD/MM/YYY</span>
+                          <span>DD/MM/AAAA</span>
                         )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -96,10 +114,15 @@ export default function GeneralData(props: GeneralDataProps) {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={field.onChange}
+                      selected={
+                        field.value ? parseDate(field.value) : undefined
+                      }
+                      onSelect={(date) =>
+                        field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
+                      }
                       disabled={(date) =>
-                        date > new Date() || date < new Date('1900-01-01')
+                        date.getTime() < new Date().setHours(0, 0, 0, 0) ||
+                        date.getTime() < new Date('1900-01-01').getTime()
                       }
                       initialFocus
                     />
@@ -126,9 +149,11 @@ export default function GeneralData(props: GeneralDataProps) {
                         )}
                       >
                         {field.value ? (
-                          format(field.value, 'PPP')
+                          format(parseDate(field.value)!, 'PPP', {
+                            locale: ptBR,
+                          })
                         ) : (
-                          <span>DD/MM/YYY</span>
+                          <span>DD/MM/AAAA</span>
                         )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -137,10 +162,15 @@ export default function GeneralData(props: GeneralDataProps) {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={field.onChange}
+                      selected={
+                        field.value ? parseDate(field.value) : undefined
+                      }
+                      onSelect={(date) =>
+                        field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
+                      }
                       disabled={(date) =>
-                        date > new Date() || date < new Date('1900-01-01')
+                        date.getTime() < new Date().setHours(0, 0, 0, 0) ||
+                        date.getTime() < new Date('1900-01-01').getTime()
                       }
                       initialFocus
                     />
