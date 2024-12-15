@@ -45,8 +45,6 @@ export default function CreateEvent() {
     if (currentStep > 1) setCurrentStep(currentStep - 1)
   }
 
-  console.log('formData', formData)
-
   const getStepTitle = () => {
     switch (currentStep) {
       case 1:

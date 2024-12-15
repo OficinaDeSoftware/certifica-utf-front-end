@@ -141,8 +141,6 @@ export default class CertificaUTF {
         apiEndpointsEnum.EVENT_FIND_ALL
       )
 
-      console.log('response', response)
-
       if (response.status === StatusCodes.OK) {
         const data = await response.json()
         const events = this.parseResponseToArrayOfIEvent(data)
