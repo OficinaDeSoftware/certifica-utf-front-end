@@ -13,6 +13,17 @@ export default function StepNavigation({
   totalSteps,
   onPrevious,
 }: StepNavigationProps) {
+  const getCurrentStepId = () => {
+    switch (currentStep) {
+      case 1:
+        return 'general-data'
+      case 2:
+        return 'workload'
+      default:
+        return ''
+    }
+  }
+
   return (
     <div className="flex w-full justify-end gap-3">
       {currentStep > 1 && (
@@ -23,7 +34,7 @@ export default function StepNavigation({
       )}
       {currentStep < totalSteps && (
         <Button
-          form="general-data"
+          form={getCurrentStepId()}
           type="submit"
           size="lg"
           className="min-h-12"

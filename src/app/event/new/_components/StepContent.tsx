@@ -1,6 +1,7 @@
 import IEvent from '@/types/IEvent'
 
 import GeneralData from './StepsForm/GeneralData'
+import Workload from './StepsForm/Workload'
 
 type StepProgressProps = {
   currentStep: number
@@ -20,7 +21,7 @@ export default function StepContent({
           <GeneralData formData={formData} handleStepSubmit={onStepSubmit} />
         )
       case 2:
-        return <div>Tab 2</div>
+        return <Workload formData={formData} handleStepSubmit={onStepSubmit} />
       case 3:
         return <div>Tab 3</div>
       default:

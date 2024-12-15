@@ -9,7 +9,7 @@ import StepContent from './_components/StepContent'
 import StepNavigation from './_components/StepNavigation'
 import StepProgress from './_components/StepProgress'
 
-const TOTAL_STEPS = 3
+const TOTAL_STEPS = 4
 
 export default function CreateEvent() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -45,11 +45,26 @@ export default function CreateEvent() {
     if (currentStep > 1) setCurrentStep(currentStep - 1)
   }
 
+  console.log('formData', formData)
+
+  const getStepTitle = () => {
+    switch (currentStep) {
+      case 1:
+        return 'Criar evento'
+      case 2:
+        return `Data e horário - ${formData.name}`
+      case 3:
+        return `Localização - ${formData.name}`
+      default:
+        return 'Criar evento'
+    }
+  }
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       <div className="flex w-full max-w-[800px] flex-1 flex-col gap-4 pb-4 pl-4 pr-4 md:gap-8 md:pb-6 md:pl-6 md:pr-6">
         <div className="flex h-32 items-center">
-          <p className="text-3xl font-semibold">Criar eventos</p>
+          <p className="text-3xl font-semibold">{getStepTitle()}</p>
         </div>
 
         <StepProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
