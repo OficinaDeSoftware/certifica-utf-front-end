@@ -3,6 +3,8 @@
 import * as React from 'react'
 import { useState } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import IEvent from '@/types/IEvent'
 
 import StepContent from './_components/StepContent'
@@ -33,8 +35,12 @@ export default function CreateEvent() {
     participants: 0,
     avaliation: 0,
   })
+  const router = useRouter()
 
   const handleStepSubmit = (data: IEvent) => {
+    if (currentStep === TOTAL_STEPS - 1) {
+      router.push('/event/list')
+    }
     setFormData((prev) => ({ ...prev, ...data }))
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep((prev) => prev + 1)

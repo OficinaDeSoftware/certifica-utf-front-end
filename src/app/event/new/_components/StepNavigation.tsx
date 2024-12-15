@@ -19,6 +19,8 @@ export default function StepNavigation({
         return 'general-data'
       case 2:
         return 'workload'
+      case 3:
+        return 'location'
       default:
         return ''
     }
@@ -39,12 +41,8 @@ export default function StepNavigation({
           size="lg"
           className="min-h-12"
         >
-          Próximo <ChevronRight />
-        </Button>
-      )}
-      {currentStep === totalSteps && (
-        <Button size="lg" className="min-h-12">
-          Finalizar
+          {currentStep === totalSteps - 1 ? 'Finalizar' : 'Próximo'}{' '}
+          <ChevronRight />
         </Button>
       )}
     </div>

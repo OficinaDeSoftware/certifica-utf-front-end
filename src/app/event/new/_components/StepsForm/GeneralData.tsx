@@ -211,7 +211,6 @@ export default function GeneralData(props: GeneralDataProps) {
               <FormControl>
                 <Textarea
                   placeholder="Descrição do evento: objetivos, prazos, etc."
-                  className="resize-none"
                   {...field}
                 />
               </FormControl>
