@@ -73,7 +73,7 @@ export async function AppSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="#" className="px-7">
+              <Link href="/event/new" className="px-7">
                 <Plus className="h-4 w-4" />
                 <span>Criar evento</span>
               </Link>

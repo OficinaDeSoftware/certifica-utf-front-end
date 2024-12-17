@@ -47,48 +47,47 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex flex-col gap-5 pl-28 pr-28">
+    <div className="flex flex-col gap-5">
       <p className="text-center text-xl font-medium">Login com RA</p>
 
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmitForm)}>
-          <div className="h-28">
-            <FormField
-              control={form.control}
-              name="ra"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ra</FormLabel>
-                  <FormControl>
-                    <Input placeholder="ex: a9999999" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+        <form
+          onSubmit={handleSubmit(onSubmitForm)}
+          className="flex flex-col gap-5"
+        >
+          <FormField
+            control={form.control}
+            name="ra"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ra</FormLabel>
+                <FormControl>
+                  <Input placeholder="ex: a9999999" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div className="h-28">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Senha</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="password" />
-                  </FormControl>
-                  <FormMessage />
-                  {error && <p className="text-destructive">{error}</p>}
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Senha</FormLabel>
+                <FormControl>
+                  <Input {...field} type="password" />
+                </FormControl>
+                <FormMessage />
+                {error && <p className="text-destructive">{error}</p>}
+              </FormItem>
+            )}
+          />
 
           <Button
             disabled={isSubmitting || loading}
             type="submit"
-            className="bg-primaryPurple w-full text-white"
+            className="h-11 w-full bg-primaryPurple text-white"
           >
             {isSubmitting || loading ? (
               <Loader2 className="animate-spin" />
@@ -106,11 +105,11 @@ export default function LoginForm() {
 
       <Button
         disabled={isSubmitting || loading}
-        className="h-16 w-full border border-gray-300 bg-white text-center text-xl font-medium text-black shadow-sm"
+        className="h-11 w-full border border-gray-300 bg-white text-center font-medium text-black shadow-sm"
         onClick={() => signIn('google', { callbackUrl: '/' })}
         variant={'secondary'}
       >
-        <Image src={googleIcon} alt="Google Icon" />
+        <Image src={googleIcon} alt="Google Icon" width={30} height={30} />
         Entrar com Google
       </Button>
     </div>

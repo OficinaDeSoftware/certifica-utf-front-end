@@ -24,10 +24,10 @@ export default async function EventDetailsPage({
   }
 
   return (
-    <div>
-      <EventBanner eventName={event.name} eventImage={event.image} />
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="flex w-full max-w-[1600px] flex-1 flex-col gap-4 pb-4 pl-4 pr-4 md:gap-8 md:pb-6 md:pl-6 md:pr-6">
+        <EventBanner eventName={event.name} eventImage={event.image} />
 
-      <div className="space-y-8 p-8">
         <EventDetails
           initialDate={event.initialDate}
           finalDate={event.finalDate}
