@@ -4,7 +4,6 @@ import Google from 'next-auth/providers/google'
 
 import authProviderEnum from '@/enums/authProvidersEnum'
 import CertificaUTF from '@/services/api/CertificaUTF/CertificaUTF'
-import logger from '@/services/winston/logger'
 
 async function authorizeCredentials(
   credentials: Record<'ra' | 'password', string> | undefined
@@ -39,13 +38,7 @@ async function authorizeCredentials(
       accessToken: user.accessToken,
     }
   } catch (error) {
-    logger.log({
-      level: 'error',
-      message: '[ credentialProvider authorize] error',
-      objects: {
-        error,
-      },
-    })
+    console.log(error)
     return null
   }
 }

@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 
-import { format, parse } from 'date-fns'
+import { format, isWithinInterval, parse } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
 import { z } from 'zod'
@@ -15,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Popover,
   PopoverContent,
@@ -25,40 +26,51 @@ import { IEventDate } from '@/types/IEvent'
 import { onNestedSubmit } from '@/utils/onNestedSubmit'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import { TimePickerDemo } from './TimePickerDemo'
+
 type DialogEventDateProps = {
   onSubmit: (data: IEventDate) => void
+  startDate: string
+  endDate: string
 }
 
 const DialogEventDateSchema = z
   .object({
-    initialDate: z.string().refine((value) => !isNaN(Date.parse(value)), {
-      message: 'Data de início inválida',
+    title: z.string().min(1, 'Nome do horário é obrigatório'),
+    startTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
+      message: 'Horário inválido',
     }),
-    finalDate: z.string().refine((value) => !isNaN(Date.parse(value)), {
-      message: 'Data de fim inválida',
+    endTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
+      message: 'Horário inválido',
+    }),
+    date: z.string().refine((value) => !isNaN(Date.parse(value)), {
+      message: 'Data inválida',
     }),
   })
   .refine(
-    (data) => Date.parse(data.initialDate) <= Date.parse(data.finalDate),
+    (data) => {
+      const [startHour, startMinute] = data.startTime.split(':').map(Number)
+      const [endHour, endMinute] = data.endTime.split(':').map(Number)
+      return startHour * 60 + startMinute <= endHour * 60 + endMinute
+    },
     {
-      message: 'A data de início deve ser anterior ou igual à data de fim',
-      path: ['finalDate'],
+      message:
+        'O horário de início deve ser anterior ou igual ao horário de fim',
+      path: ['endTime'],
     }
   )
-  .refine((data) => Date.parse(data.initialDate) >= Date.now(), {
-    message: 'A data de início não pode ser no passado',
-    path: ['initialDate'],
-  })
 
 export default function DialogEventDate(props: DialogEventDateProps) {
-  const { onSubmit } = props
+  const { onSubmit, startDate, endDate } = props
 
   const form = useForm({
     resolver: zodResolver(DialogEventDateSchema),
     defaultValues: {
       id: '',
-      initialDate: '',
-      finalDate: '',
+      startTime: '',
+      endTime: '',
+      date: '',
+      title: '',
     },
   })
 
@@ -67,8 +79,11 @@ export default function DialogEventDate(props: DialogEventDateProps) {
 
   const onInnerSubmit = onNestedSubmit({
     handleSubmit: form.handleSubmit,
-    submitFunction: onSubmit, // submission function
+    submitFunction: onSubmit,
   })
+
+  const startParsed = parse(startDate, 'yyyy-MM-dd', new Date())
+  const endParsed = parse(endDate, 'yyyy-MM-dd', new Date())
 
   return (
     <Form {...form}>
@@ -80,10 +95,23 @@ export default function DialogEventDate(props: DialogEventDateProps) {
         <div className="flex gap-4">
           <FormField
             control={form.control}
-            name={'initialDate'}
+            name="title"
             render={({ field }) => (
               <FormItem className="flex w-1/2 flex-col">
-                <FormLabel>Data de início</FormLabel>
+                <FormLabel>Título</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name={'date'}
+            render={({ field }) => (
+              <FormItem className="flex w-1/2 flex-col">
+                <FormLabel>Data</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -117,8 +145,10 @@ export default function DialogEventDate(props: DialogEventDateProps) {
                         field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
                       }
                       disabled={(date) =>
-                        date.getTime() <= new Date().setHours(0, 0, 0, 0) ||
-                        date.getTime() < new Date('1900-01-01').getTime()
+                        !isWithinInterval(date, {
+                          start: startParsed,
+                          end: endParsed,
+                        })
                       }
                       initialFocus
                     />
@@ -128,52 +158,45 @@ export default function DialogEventDate(props: DialogEventDateProps) {
               </FormItem>
             )}
           />
+        </div>
+
+        <div className="flex gap-4">
           <FormField
             control={form.control}
-            name={'finalDate'}
+            name="startTime"
             render={({ field }) => (
               <FormItem className="flex w-1/2 flex-col">
-                <FormLabel>Data de encerramento</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        form="dialog-event-date"
-                        variant={'outline'}
-                        className={cn(
-                          'h-12 pl-3 text-left font-normal',
-                          !field.value && 'text-muted-foreground'
-                        )}
-                      >
-                        {field.value ? (
-                          format(parseDate(field.value)!, 'PPP', {
-                            locale: ptBR,
-                          })
-                        ) : (
-                          <span>DD/MM/AAAA</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      className="pointer-events-auto"
-                      mode="single"
-                      selected={
-                        field.value ? parseDate(field.value) : undefined
-                      }
-                      onSelect={(date) =>
-                        field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
-                      }
-                      disabled={(date) =>
-                        date.getTime() <= new Date().setHours(0, 0, 0, 0) ||
-                        date.getTime() < new Date('1900-01-01').getTime()
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <FormLabel>Horário de Inicio</FormLabel>
+                <TimePickerDemo
+                  setDate={(date: Date | undefined) =>
+                    field.onChange(date ? format(date, 'HH:mm') : '')
+                  }
+                  date={
+                    field.value
+                      ? parse(field.value, 'HH:mm', new Date())
+                      : undefined
+                  }
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="endTime"
+            render={({ field }) => (
+              <FormItem className="flex w-1/2 flex-col">
+                <FormLabel>Horário de Fim</FormLabel>
+                <TimePickerDemo
+                  setDate={(date: Date | undefined) =>
+                    field.onChange(date ? format(date, 'HH:mm') : '')
+                  }
+                  date={
+                    field.value
+                      ? parse(field.value, 'HH:mm', new Date())
+                      : undefined
+                  }
+                />
                 <FormMessage />
               </FormItem>
             )}

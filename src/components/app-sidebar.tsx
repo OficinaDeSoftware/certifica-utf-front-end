@@ -1,10 +1,4 @@
-import {
-  BadgeIcon as Certificate,
-  Home,
-  Plus,
-  Settings,
-  Trophy,
-} from 'lucide-react'
+import { BadgeIcon as Certificate, Home, Plus, Trophy } from 'lucide-react'
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -60,14 +54,6 @@ export async function AppSidebar() {
               <Link href="#" className="px-7">
                 <Certificate className="h-4 w-4" />
                 <span>Certificados</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="#" className="px-7">
-                <Settings className="h-4 w-4" />
-                <span>Configurações</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

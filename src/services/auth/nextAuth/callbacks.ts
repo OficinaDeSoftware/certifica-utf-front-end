@@ -6,7 +6,6 @@ import { AdapterUser } from 'next-auth/adapters'
 
 import authProviderEnum from '@/enums/authProvidersEnum'
 import CertificaUTF from '@/services/api/CertificaUTF/CertificaUTF'
-import logger from '@/services/winston/logger'
 import { sessionUser } from '@/types/next-auth'
 
 type ISignInCallback = (
@@ -43,14 +42,6 @@ const signInWithGoogle: ISignInCallback = async (
 
     return true
   } catch (error) {
-    logger.log({
-      level: 'error',
-      message: '[signIn] error',
-      objects: {
-        error,
-      },
-    })
-
     return false
   }
 }

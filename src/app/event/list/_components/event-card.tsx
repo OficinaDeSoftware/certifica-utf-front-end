@@ -8,15 +8,16 @@ interface EventCardProps {
   event: IEvent
 }
 
-export function EventCard({ event }: EventCardProps) {
+export async function EventCard({ event }: EventCardProps) {
   return (
     <Link href={`/event/detail/${event.id}`}>
       <Card className="flex h-72 gap-4 p-4 transition-colors hover:bg-accent">
         <Image
-          src={event.image}
+          src={event.backgroundImage.url || ''}
           alt={event.name}
-          width={120}
-          height={120}
+          width={300}
+          height={300}
+          quality={100}
           className="w-1/3 rounded-lg object-cover"
         />
         <div className="space-y-2">
@@ -26,9 +27,7 @@ export function EventCard({ event }: EventCardProps) {
           </CardHeader>
           <CardContent className="p-0">
             <p className="text-sm text-muted-foreground">{event.description}</p>
-            <p className="mt-2 text-sm">
-              {new Date(event.initialDate).toLocaleDateString('pt-BR')}
-            </p>
+            <p className="mt-2 text-sm">{event.startDate}</p>
           </CardContent>
         </div>
       </Card>

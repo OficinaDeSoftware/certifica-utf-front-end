@@ -3,8 +3,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import logger from '@/services/winston/logger'
-
 interface IFetchServer {
   (
     input: string | URL | Request,
@@ -30,13 +28,7 @@ export const fetchServer: IFetchServer = async (input, init) => {
       redirect('/login')
     }
   } catch (error) {
-    logger.log({
-      level: 'error',
-      message: '[fetchServer]',
-      objects: {
-        error,
-      },
-    })
+    console.error(error)
   }
 
   return response
