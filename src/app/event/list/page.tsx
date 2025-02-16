@@ -3,9 +3,7 @@ import getFetchCertificaUTF from '@/utils/getFetchCertificaUTF'
 import { EventCard } from './_components/event-card'
 
 export default async function EventList() {
-  const { sucess: events } = await (
-    await getFetchCertificaUTF()
-  ).getEventsMock()
+  const { sucess: events } = await (await getFetchCertificaUTF()).getEvents()
 
   return (
     <div className="mx-auto p-4">

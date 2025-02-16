@@ -7,6 +7,7 @@ interface EventDetailsProps {
   finalDate: string
   workload: number
   locationDescription: string
+  availableSpots: number
 }
 
 export default function EventDetails({
@@ -14,6 +15,7 @@ export default function EventDetails({
   finalDate,
   workload,
   locationDescription,
+  availableSpots,
 }: EventDetailsProps) {
   return (
     <div className="grid gap-8 md:grid-cols-2">
@@ -24,8 +26,7 @@ export default function EventDetails({
             <div className="flex items-center gap-2">
               <Calendar className="h-8 w-8 text-primaryPurple" />
               <span>
-                {new Date(initialDate).toLocaleDateString('pt-BR')} à{' '}
-                {new Date(finalDate).toLocaleDateString('pt-BR')}
+                {initialDate} à {finalDate}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -48,7 +49,7 @@ export default function EventDetails({
             </div>
             <div className="flex items-center gap-2">
               <Users className="h-8 w-8 text-primaryPurple" />
-              <span>{/*event.availableSpots*/ '99'} Vagas</span>
+              <span>{availableSpots} Vagas</span>
             </div>
           </div>
         </CardContent>

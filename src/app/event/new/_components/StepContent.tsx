@@ -1,8 +1,9 @@
 import IEvent from '@/types/IEvent'
 
+import Certificate from './StepsForm/Certificate'
+import Confirmation from './StepsForm/Confirmation'
 import GeneralData from './StepsForm/GeneralData'
 import Localization from './StepsForm/Location'
-import Workload from './StepsForm/Workload'
 
 type StepProgressProps = {
   currentStep: number
@@ -22,11 +23,15 @@ export default function StepContent({
           <GeneralData formData={formData} handleStepSubmit={onStepSubmit} />
         )
       case 2:
-        return <Workload formData={formData} handleStepSubmit={onStepSubmit} />
-      case 3:
         return (
           <Localization formData={formData} handleStepSubmit={onStepSubmit} />
         )
+      case 3:
+        return (
+          <Certificate formData={formData} handleStepSubmit={onStepSubmit} />
+        )
+      case 4:
+        return <Confirmation formData={formData} />
       default:
         return null
     }

@@ -38,9 +38,9 @@
     "react-dom": "^18",
     "react-dropzone": "^14.3.5",
     "react-hook-form": "^7.53.1",
+    "react-toastify": "^11.0.3",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "winston": "^3.16.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

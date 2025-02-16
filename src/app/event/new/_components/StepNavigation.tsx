@@ -6,21 +6,25 @@ type StepNavigationProps = {
   currentStep: number
   totalSteps: number
   onPrevious: () => void
+  handleFinishEvent: () => void
 }
 
 export default function StepNavigation({
   currentStep,
   totalSteps,
   onPrevious,
+  handleFinishEvent,
 }: StepNavigationProps) {
   const getCurrentStepId = () => {
     switch (currentStep) {
       case 1:
         return 'general-data'
       case 2:
-        return 'workload'
-      case 3:
         return 'location'
+      case 3:
+        return 'certificate'
+      case 4:
+        return 'confirmation'
       default:
         return ''
     }
@@ -34,15 +38,23 @@ export default function StepNavigation({
           Voltar
         </Button>
       )}
-      {currentStep < totalSteps && (
+      {currentStep < totalSteps && currentStep !== totalSteps - 1 && (
         <Button
           form={getCurrentStepId()}
           type="submit"
           size="lg"
           className="min-h-12"
         >
-          {currentStep === totalSteps - 1 ? 'Finalizar' : 'Próximo'}{' '}
-          <ChevronRight />
+          {'Próximo'} <ChevronRight />
+        </Button>
+      )}
+      {currentStep === totalSteps - 1 && (
+        <Button
+          onClick={() => handleFinishEvent()}
+          size="lg"
+          className="min-h-12"
+        >
+          Finalizar
         </Button>
       )}
     </div>

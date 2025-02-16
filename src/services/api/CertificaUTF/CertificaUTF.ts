@@ -1,7 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 
 import authProviderEnum from '@/enums/authProvidersEnum'
-import logger from '@/services/winston/logger'
 import SomethingWentWrongError from '@/types/errors/SomethingWentWrongError'
 import UnauthorizedError from '@/types/errors/UnauthorizedError'
 import IEvent from '@/types/IEvent'
@@ -37,17 +36,29 @@ export default class CertificaUTF {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const events: Array<IEvent> = data.map((event: any) => {
       return {
-        id: event.id,
-        name: event.name,
-        initialDate: event.initialDate,
-        finalDate: event.finalDate,
-        workload: event.workload,
-        description: event.description,
-        location: event.location,
-        eventDates: event.eventDates,
-        image: event.image,
-        participants: event.participants,
-        avaliation: event.avaliation,
+        id: event?.idEvent || event?.id,
+        name: event?.name,
+        startDate: event?.startDate,
+        endDate: event?.endDate,
+        dates: event?.dates,
+        certificate: {
+          ...event?.certificate,
+          issuerLogoImage: {
+            url: event?.certificate?.issuerLogoUrl,
+          },
+        },
+        description: event?.description,
+        backgroundImage: {
+          url: event?.backgroundUrl,
+        },
+        workload: event?.workload,
+        location: {
+          ...event?.location,
+          coordinates: {
+            lat: event?.location?.coordinates?.latitude,
+            lng: event?.location?.coordinates?.longitude,
+          },
+        },
       } as IEvent
     })
 
@@ -63,13 +74,16 @@ export default class CertificaUTF {
       const typeProviderUTFPR =
         typeProvider === authProviderEnum.CREDENTIALS ? 'UTFPR' : 'CREDENTIALS'
 
-      const response = await this.FetchWrapper.post(apiEndpointsEnum.LOGIN, {
-        body: JSON.stringify({
-          typeProvider: typeProviderUTFPR,
-          login: ra,
-          password: password,
-        }),
-      })
+      const response = await this.FetchWrapper.postNoToken(
+        apiEndpointsEnum.LOGIN,
+        {
+          body: JSON.stringify({
+            typeProvider: typeProviderUTFPR,
+            login: ra,
+            password: password,
+          }),
+        }
+      )
 
       if (response.status === StatusCodes.OK) {
         const data = await response.json()
@@ -86,13 +100,6 @@ export default class CertificaUTF {
 
       throw new SomethingWentWrongError('Algo deu errado')
     } catch (error) {
-      logger.log({
-        level: 'error',
-        message: '[loginWithGoogle] error',
-        objects: {
-          error,
-        },
-      })
       return { sucess: null, error: error }
     }
   }
@@ -102,12 +109,15 @@ export default class CertificaUTF {
     idToken: string
   ): Promise<IResponseHandler<IUser, unknown>> {
     try {
-      const response = await this.FetchWrapper.post(apiEndpointsEnum.LOGIN, {
-        body: JSON.stringify({
-          typeProvider: typeProvider.toUpperCase(),
-          idToken,
-        }),
-      })
+      const response = await this.FetchWrapper.postNoToken(
+        apiEndpointsEnum.LOGIN,
+        {
+          body: JSON.stringify({
+            typeProvider: typeProvider.toUpperCase(),
+            idToken,
+          }),
+        }
+      )
 
       if (response.status === StatusCodes.OK) {
         const data = await response.json()
@@ -124,13 +134,6 @@ export default class CertificaUTF {
 
       throw new SomethingWentWrongError('Algo deu errado')
     } catch (error) {
-      logger.log({
-        level: 'error',
-        message: '[loginWithGoogle] error',
-        objects: {
-          error,
-        },
-      })
       return { sucess: null, error: error }
     }
   }
@@ -138,7 +141,7 @@ export default class CertificaUTF {
   async getEvents(): Promise<IResponseHandler<Array<IEvent>, unknown>> {
     try {
       const response = await this.FetchWrapper.get(
-        apiEndpointsEnum.EVENT_FIND_ALL
+        (process.env.NEXTAUTH_URL as string) + apiEndpointsEnum.EVENT_FIND_ALL
       )
 
       if (response.status === StatusCodes.OK) {
@@ -156,138 +159,59 @@ export default class CertificaUTF {
 
       throw new SomethingWentWrongError('Algo deu errado')
     } catch (error) {
-      logger.log({
-        level: 'error',
-        message: '[getEvents] error',
-        objects: {
-          error,
-        },
-      })
+      console.log(error)
       return { sucess: null, error: error }
     }
   }
 
-  async getEventsMock(): Promise<IResponseHandler<Array<IEvent>, unknown>> {
-    const mockEvents: Array<IEvent> = [
-      {
-        id: '1',
-        name: 'Liderança e Gestão de Equipes em Tempos de Mudança',
-        initialDate: '2024-03-12',
-        finalDate: '2024-03-12',
-        workload: 4,
-        description:
-          'Uma palestra sobre como liderar equipes com empatia e resiliência, especializando em cenários de mudança radical.',
-        location: {
-          description: 'B2-S5',
-          latitude: -23.6,
-          longitude: -46.7,
-          latitudeDelta: 0,
-          longitudeDelta: 0,
-          mapUrl: '',
-        },
-        eventDates: [
-          {
-            id: '1',
-            initialDate: '2024-05-05',
-            finalDate: '2024-05-05',
-          },
-          {
-            id: '2',
-            initialDate: '2024-05-05',
-            finalDate: '2024-05-05',
-          },
-        ],
-        image:
-          'https://upload.wikimedia.org/wikipedia/commons/7/75/La_caza_salvaje_de_Od%C3%ADn%2C_por_Peter_Nicolai_Arbo.jpg',
-        participants: 65,
-        avaliation: 111,
-      },
-      {
-        id: '2',
-        name: 'Marketing Digital para Pequenos Negócios',
-        initialDate: '2024-04-20',
-        finalDate: '2024-04-20',
-        workload: 4,
-        description:
-          'Workshop voltado para empreendedores e profissionais da indústria que querem aprender estratégias eficazes para atrair clientes.',
-        location: {
-          description: 'B2-S5',
-          latitude: 0,
-          longitude: 0,
-          latitudeDelta: 0,
-          longitudeDelta: 0,
-          mapUrl: '',
-        },
-        eventDates: [
-          {
-            id: '1',
-            initialDate: '2024-05-05',
-            finalDate: '2024-05-05',
-          },
-          {
-            id: '2',
-            initialDate: '2024-05-05',
-            finalDate: '2024-05-05',
-          },
-        ],
-        image:
-          'https://upload.wikimedia.org/wikipedia/commons/7/75/La_caza_salvaje_de_Od%C3%ADn%2C_por_Peter_Nicolai_Arbo.jpg',
-        participants: 485,
-        avaliation: 100,
-      },
-      {
-        id: '3',
-        name: 'Introdução ao Design de Interfaces Intuitivas',
-        initialDate: '2024-05-05',
-        finalDate: '2024-05-05',
-        workload: 4,
-        description:
-          'Mini-curso prático que ensina os fundamentos do design UI/UX com interfaces mais acessíveis e fáceis de usar.',
-        location: {
-          description: 'B2-S5',
-          latitude: 0,
-          longitude: 0,
-          latitudeDelta: 0,
-          longitudeDelta: 0,
-          mapUrl: '',
-        },
-        eventDates: [
-          {
-            id: '1',
-            initialDate: '2024-05-05',
-            finalDate: '2024-05-05',
-          },
-          {
-            id: '2',
-            initialDate: '2024-05-05',
-            finalDate: '2024-05-05',
-          },
-        ],
-        image:
-          'https://upload.wikimedia.org/wikipedia/commons/7/75/La_caza_salvaje_de_Od%C3%ADn%2C_por_Peter_Nicolai_Arbo.jpg',
-        participants: 1000,
-        avaliation: 154,
-      },
-    ]
+  async getEventById(id: string): Promise<IResponseHandler<IEvent, unknown>> {
+    try {
+      const response = await this.FetchWrapper.get(
+        (process.env.NEXTAUTH_URL as string) +
+          apiEndpointsEnum.EVENT_FIND_ALL +
+          `/${id}`
+      )
 
-    return new Promise<IResponseHandler<Array<IEvent>, unknown>>((resolve) => {
-      setTimeout(() => {
-        resolve({ sucess: mockEvents, error: null })
-      }, 1000)
-    })
+      if (response.status === StatusCodes.OK) {
+        const data = await response.json()
+        const event = this.parseResponseToArrayOfIEvent([{ ...data }])[0]
+
+        return { sucess: event, error: null }
+      }
+
+      if (response.status === StatusCodes.UNAUTHORIZED) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para realizar esta operação'
+        )
+      }
+
+      throw new SomethingWentWrongError('Algo deu errado')
+    } catch (error) {
+      console.log(error)
+      return { sucess: null, error: error }
+    }
   }
 
-  async getEventByIdMock(
-    id: string
-  ): Promise<IResponseHandler<IEvent, unknown>> {
-    const { sucess: mockEvents } = await this.getEventsMock()
+  async deleteEvent(id: string): Promise<IResponseHandler<boolean, unknown>> {
+    try {
+      const response = await this.FetchWrapper.delete(
+        `${process.env.NEXTAUTH_URL as string}${apiEndpointsEnum.EVENT_DELETE}/${id}`
+      )
 
-    if (!mockEvents) throw new SomethingWentWrongError('Algo deu errado')
+      if (response.status === StatusCodes.OK) {
+        return { sucess: true, error: null }
+      }
 
-    const event = mockEvents.find((event) => event.id === id)
+      if (response.status === StatusCodes.UNAUTHORIZED) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para realizar esta operação'
+        )
+      }
 
-    if (!event) throw new SomethingWentWrongError('Algo deu errado')
-
-    return { sucess: event, error: null }
+      throw new SomethingWentWrongError('Algo deu errado ao excluir o evento')
+    } catch (error) {
+      console.error('Erro ao excluir o evento:', error)
+      return { sucess: false, error: error }
+    }
   }
 }

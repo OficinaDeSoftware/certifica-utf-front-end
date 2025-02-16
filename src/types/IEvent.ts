@@ -1,28 +1,44 @@
 export default interface IEvent {
   id: string
   name: string
-  initialDate: string
-  finalDate: string
+  startDate: string
+  endDate: string
+  dates: Array<IEventDate>
   workload: number
   description: string
+  backgroundImage: IBackgroundImage
   location: IEventLocation
-  eventDates: Array<IEventDate>
-  image: string
-  participants: number
-  avaliation: number
+  certificate: IEventCertificate
 }
 
 export interface IEventLocation {
-  description: string
-  latitude: number
-  longitude: number
-  latitudeDelta: number
-  longitudeDelta: number
-  mapUrl: string
+  address: string
+  complement: string
+  capacity: number
+  coordinates: { lat: number; lng: number }
 }
 
 export interface IEventDate {
   id: string
-  initialDate: string
-  finalDate: string
+  title: string
+  date: string
+  startTime: string
+  endTime: string
+}
+
+export interface IEventCertificate {
+  modelId: string
+  complement: string
+  issuerLogoImage: IBackgroundImage
+  responsible: IEventResponsible
+}
+
+export interface IEventResponsible {
+  signature: string
+  occupation: string
+}
+
+export interface IBackgroundImage {
+  file?: File
+  url?: string
 }

@@ -18,7 +18,12 @@ export async function ProfileForm({ user }: ProfileFormProps) {
         <label className="text-sm font-medium" htmlFor="name">
           Nome
         </label>
-        <Input className="mt-2" id="name" placeholder="Nome completo" />
+        <Input
+          className="mt-2"
+          id="name"
+          placeholder="Nome completo"
+          value={user.name}
+        />
       </div>
       <div>
         <label className="text-sm font-medium" htmlFor="email">
@@ -29,13 +34,14 @@ export async function ProfileForm({ user }: ProfileFormProps) {
           id="email"
           placeholder="ex@gmail.com"
           type="email"
+          value={user.email}
         />
       </div>
       <div>
         <label className="text-sm font-medium" htmlFor="id">
           Identificador
         </label>
-        <Input className="mt-2" id="id" placeholder="ID" />
+        <Input className="mt-2" id="id" placeholder="ID" value={user.id} />
       </div>
       <div>
         <h2 className="mb-4 text-lg font-medium">Meu QR Code</h2>
