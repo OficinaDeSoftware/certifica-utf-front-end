@@ -1,10 +1,18 @@
 'use client'
 
+import { useState } from 'react'
 import { toast } from 'react-toastify'
 
+import { CheckCircle } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import eventStatusEnum from '@/enums/eventStatusEnum'
 import userRoleEnum from '@/enums/userRoleEnum'
 import {
@@ -22,6 +30,7 @@ const EventFooter = ({
 }) => {
   const { data: session } = useSession()
   const user = session?.user
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
 
   if (!user) return null
 
@@ -47,6 +56,7 @@ const EventFooter = ({
     await finishEventService({ id: event.id })
       .then((response) => {
         if (response.sucess) {
+          setShowSuccessDialog(true)
           toast.success('Evento finalizado com sucesso!')
         }
       })
@@ -65,21 +75,35 @@ const EventFooter = ({
   }
 
   return (
-    <div className="flex w-full justify-end gap-3">
-      <Button
-        onClick={() => {
-          if (isAdmin) {
-            handleFinishEvent()
-          } else {
-            handleSubscribeEvent()
-          }
-        }}
-        size="lg"
-        className="min-h-12"
-      >
-        {isAdmin ? 'Encerrar' : 'Increver-se'}
-      </Button>
-    </div>
+    <>
+      <div className="flex w-full justify-end gap-3">
+        <Button
+          onClick={() => {
+            if (isAdmin) {
+              handleFinishEvent()
+            } else {
+              handleSubscribeEvent()
+            }
+          }}
+          size="lg"
+          className="min-h-12"
+        >
+          {isAdmin ? 'Encerrar' : 'Increver-se'}
+        </Button>
+      </div>
+
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <CheckCircle className="mx-auto h-12 w-12 text-green-500" />
+            <DialogTitle className="text-center text-lg font-semibold">
+              Sucesso! Disparando certificados e enviando emails aos
+              participantes do evento
+            </DialogTitle>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
