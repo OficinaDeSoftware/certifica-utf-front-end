@@ -38,7 +38,6 @@ export async function apiFetch<T>(
   return response
 }
 
-// Agora podemos chamar a função de maneira mais flexível:
 export async function getCertificatesService() {
   return apiFetch<Array<ICertificate>>(apiEndpointsEnum.CERTIFICATE_FIND_ALL)
 }
@@ -76,6 +75,7 @@ export async function postEventService(event: IEvent) {
       ],
     },
     backgroundUrl: event.backgroundImage.url,
+    nrUuidResponsible: event.nrUuidResponsible,
   }
 
   return apiFetch<IEvent>(apiEndpointsEnum.EVENT_CREATE, {
@@ -110,4 +110,29 @@ export async function uploadResourceService(file: File, identifier: string) {
     console.error('Erro ao fazer upload do recurso:', error)
     throw error
   }
+}
+
+export async function subscribeEventService({
+  id,
+  nrUuidParticipant,
+}: {
+  id: string
+  nrUuidParticipant: string
+}) {
+  const data = {
+    idEvent: id,
+  }
+  return apiFetch(
+    `${apiEndpointsEnum.SUBSCRIBE_PARTICIPANT}/${nrUuidParticipant}/subscribe`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ ...data }),
+    }
+  )
+}
+
+export async function finishEventService({ id }: { id: string }) {
+  return apiFetch(`${apiEndpointsEnum.EVENT_CREATE}/${id}/finished`, {
+    method: 'POST',
+  })
 }

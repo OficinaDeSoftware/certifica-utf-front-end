@@ -3,7 +3,8 @@ import { StatusCodes } from 'http-status-codes'
 import authProviderEnum from '@/enums/authProvidersEnum'
 import SomethingWentWrongError from '@/types/errors/SomethingWentWrongError'
 import UnauthorizedError from '@/types/errors/UnauthorizedError'
-import IEvent from '@/types/IEvent'
+import { ICertificateParticipant } from '@/types/ICertificate'
+import IEvent, { ISubscribed } from '@/types/IEvent'
 import IResponseHandler from '@/types/IResponseHandler.'
 import IUser from '@/types/IUser'
 import FetchWrapper from '@/utils/FetchWrapper/FetchWrapper'
@@ -59,6 +60,8 @@ export default class CertificaUTF {
             lng: event?.location?.coordinates?.longitude,
           },
         },
+        participantsCount: event?.participantsCount,
+        status: event?.status,
       } as IEvent
     })
 
@@ -164,6 +167,66 @@ export default class CertificaUTF {
     }
   }
 
+  async getEventsByResponsible(
+    responsibleId: string
+  ): Promise<IResponseHandler<Array<IEvent>, unknown>> {
+    try {
+      const response = await this.FetchWrapper.get(
+        (process.env.NEXTAUTH_URL as string) +
+          apiEndpointsEnum.EVENT_FIND_ALL +
+          `?responsible=${responsibleId}`
+      )
+
+      if (response.status === StatusCodes.OK) {
+        const data = await response.json()
+        const events = this.parseResponseToArrayOfIEvent(data)
+
+        return { sucess: events, error: null }
+      }
+
+      if (response.status === StatusCodes.UNAUTHORIZED) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para realizar esta operação'
+        )
+      }
+
+      throw new SomethingWentWrongError('Algo deu errado')
+    } catch (error) {
+      console.log(error)
+      return { sucess: null, error: error }
+    }
+  }
+
+  async getEventsByParticipant(
+    participantId: string
+  ): Promise<IResponseHandler<Array<IEvent>, unknown>> {
+    try {
+      const response = await this.FetchWrapper.get(
+        (process.env.NEXTAUTH_URL as string) +
+          apiEndpointsEnum.EVENT_FIND_ALL +
+          `?participant=${participantId}`
+      )
+
+      if (response.status === StatusCodes.OK) {
+        const data = await response.json()
+        const events = this.parseResponseToArrayOfIEvent(data)
+
+        return { sucess: events, error: null }
+      }
+
+      if (response.status === StatusCodes.UNAUTHORIZED) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para realizar esta operação'
+        )
+      }
+
+      throw new SomethingWentWrongError('Algo deu errado')
+    } catch (error) {
+      console.log(error)
+      return { sucess: null, error: error }
+    }
+  }
+
   async getEventById(id: string): Promise<IResponseHandler<IEvent, unknown>> {
     try {
       const response = await this.FetchWrapper.get(
@@ -177,6 +240,36 @@ export default class CertificaUTF {
         const event = this.parseResponseToArrayOfIEvent([{ ...data }])[0]
 
         return { sucess: event, error: null }
+      }
+
+      if (response.status === StatusCodes.UNAUTHORIZED) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para realizar esta operação'
+        )
+      }
+
+      throw new SomethingWentWrongError('Algo deu errado')
+    } catch (error) {
+      console.log(error)
+      return { sucess: null, error: error }
+    }
+  }
+
+  async getSubscribed(
+    id: string,
+    eventId: string
+  ): Promise<IResponseHandler<ISubscribed, unknown>> {
+    try {
+      const response = await this.FetchWrapper.get(
+        (process.env.NEXTAUTH_URL as string) +
+          apiEndpointsEnum.SUBSCRIBE_PARTICIPANT +
+          `/subscribed?id=${id}&idEvent=${eventId}`
+      )
+
+      if (response.status === StatusCodes.OK) {
+        const data = await response.json()
+
+        return { sucess: data as ISubscribed, error: null }
       }
 
       if (response.status === StatusCodes.UNAUTHORIZED) {
@@ -212,6 +305,35 @@ export default class CertificaUTF {
     } catch (error) {
       console.error('Erro ao excluir o evento:', error)
       return { sucess: false, error: error }
+    }
+  }
+
+  async getCertificateByParticipant(
+    participantId: string
+  ): Promise<IResponseHandler<Array<ICertificateParticipant>, unknown>> {
+    try {
+      const response = await this.FetchWrapper.get(
+        (process.env.NEXTAUTH_URL as string) +
+          apiEndpointsEnum.CERTIFICATE_PARTICIPANT +
+          `/${participantId}`
+      )
+
+      if (response.status === StatusCodes.OK) {
+        const data = await response.json()
+
+        return { sucess: data, error: null }
+      }
+
+      if (response.status === StatusCodes.UNAUTHORIZED) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para realizar esta operação'
+        )
+      }
+
+      throw new SomethingWentWrongError('Algo deu errado')
+    } catch (error) {
+      console.log(error)
+      return { sucess: null, error: error }
     }
   }
 }

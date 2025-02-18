@@ -1,6 +1,8 @@
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
 
+import userRoleEnum from './enums/userRoleEnum'
+
 export default withAuth(
   async function middleware(req) {
     const {
@@ -14,6 +16,12 @@ export default withAuth(
 
     if (['/', '/profile'].includes(pathname) && !token) {
       return NextResponse.redirect(new URL('/login', req.url))
+    }
+
+    if (pathname.startsWith('/event/new')) {
+      if (!token || !(token.roles as string[]).includes(userRoleEnum.ADMIN)) {
+        return NextResponse.redirect(new URL('/', req.url))
+      }
     }
   },
   {
@@ -30,5 +38,5 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|.*.png$).*)'],
 }

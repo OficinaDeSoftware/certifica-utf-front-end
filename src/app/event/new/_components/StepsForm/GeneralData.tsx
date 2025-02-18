@@ -74,10 +74,6 @@ const generalDataSchema = z
     message: 'A data de início deve ser anterior ou igual à data de fim',
     path: ['endDate'],
   })
-  .refine((data) => Date.parse(data.startDate) >= Date.now(), {
-    message: 'A data de início não pode ser no passado',
-    path: ['startDate'],
-  })
 
 export default function GeneralData(props: GeneralDataProps) {
   const { formData, handleStepSubmit } = props
@@ -205,7 +201,7 @@ export default function GeneralData(props: GeneralDataProps) {
                         field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
                       }
                       disabled={(date) =>
-                        date.getTime() <= new Date().setHours(0, 0, 0, 0) ||
+                        date.getTime() < new Date().setHours(0, 0, 0, 0) ||
                         date.getTime() < new Date('1900-01-01').getTime()
                       }
                       initialFocus
@@ -253,7 +249,7 @@ export default function GeneralData(props: GeneralDataProps) {
                         field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
                       }
                       disabled={(date) =>
-                        date.getTime() <= new Date().setHours(0, 0, 0, 0) ||
+                        date.getTime() < new Date().setHours(0, 0, 0, 0) ||
                         date.getTime() < new Date('1900-01-01').getTime()
                       }
                       initialFocus

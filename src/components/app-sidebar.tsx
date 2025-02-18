@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar'
+import userRoleEnum from '@/enums/userRoleEnum'
 import { authOptions } from '@/services/auth/nextAuth/authOptions'
 
 export async function AppSidebar() {
@@ -49,22 +50,26 @@ export async function AppSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="#" className="px-7">
-                <Certificate className="h-4 w-4" />
-                <span>Certificados</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/event/new" className="px-7">
-                <Plus className="h-4 w-4" />
-                <span>Criar evento</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {user.roles.includes(userRoleEnum.USER) && (
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/certificates" className="px-7">
+                  <Certificate className="h-4 w-4" />
+                  <span>Certificados</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
+          {user.roles.includes(userRoleEnum.ADMIN) && (
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/event/new" className="px-7">
+                  <Plus className="h-4 w-4" />
+                  <span>Criar evento</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarContent>
     </Sidebar>

@@ -2,10 +2,12 @@
 
 import * as React from 'react'
 import { useState } from 'react'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
+import eventStatusEnum from '@/enums/eventStatusEnum'
 import {
   postEventService,
   uploadResourceService,
@@ -20,6 +22,7 @@ const TOTAL_STEPS = 5
 
 export default function CreateEvent() {
   const [currentStep, setCurrentStep] = useState(1)
+  const { data: session } = useSession()
   const [formData, setFormData] = useState<IEvent>({
     id: '',
     name: '',
@@ -50,6 +53,9 @@ export default function CreateEvent() {
         signature: '',
       },
     },
+    nrUuidResponsible: '',
+    participantsCount: 0,
+    status: eventStatusEnum.IN_PROGRESS,
   })
   const router = useRouter()
 
@@ -86,6 +92,7 @@ export default function CreateEvent() {
             url: newLogoUrl.url,
           },
         },
+        nrUuidResponsible: session?.user.id as string,
       }
 
       await postEventService(data)
@@ -153,7 +160,6 @@ export default function CreateEvent() {
           />
         </div>
       </div>
-      <ToastContainer />
     </>
   )
 }

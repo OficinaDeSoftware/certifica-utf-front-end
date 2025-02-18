@@ -7,6 +7,7 @@ import { AppSidebar } from '@/components/app-sidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 import { SessionProvider } from '@/providers/SessionProvider'
+import ToastProvider from '@/providers/ToastProvider'
 
 export const metadata: Metadata = {
   title: {
@@ -25,17 +26,21 @@ export default function RootLayout({
     <SessionProvider>
       <html lang="pt-br">
         <body>
-          <SidebarProvider>
-            <div className={cn('grid min-h-screen w-full')}>
-              <div className={cn('flex')}>
-                <AppSidebar />
-                <div className={cn('max-w-screen flex w-full flex-1 flex-col')}>
-                  <AppMenubar />
-                  <main className="flex-1">{children}</main>
+          <ToastProvider>
+            <SidebarProvider>
+              <div className={cn('grid min-h-screen w-full')}>
+                <div className={cn('flex')}>
+                  <AppSidebar />
+                  <div
+                    className={cn('max-w-screen flex w-full flex-1 flex-col')}
+                  >
+                    <AppMenubar />
+                    <main className="flex-1">{children}</main>
+                  </div>
                 </div>
               </div>
-            </div>
-          </SidebarProvider>
+            </SidebarProvider>
+          </ToastProvider>
         </body>
       </html>
     </SessionProvider>

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useForm } from 'react-hook-form'
 
 import { z } from 'zod'
@@ -54,6 +55,11 @@ export default function Localization(props: LocalizationProps) {
         id="location"
         onSubmit={form.handleSubmit(handleStepSubmit)}
         className="flex w-full flex-col gap-4"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+          }
+        }}
       >
         <FormField
           control={form.control}

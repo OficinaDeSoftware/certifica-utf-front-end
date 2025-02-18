@@ -15,6 +15,8 @@ const Confirmation = ({ formData }: ConfirmationProps) => {
         <EventBanner
           eventName={formData.name}
           eventImage={formData.backgroundImage.url || ''}
+          eventStatus={formData.status}
+          subscribed={null}
         />
 
         <EventDetails
