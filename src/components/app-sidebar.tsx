@@ -53,7 +53,7 @@ export async function AppSidebar() {
           {user.roles.includes(userRoleEnum.USER) && (
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link href="#" className="px-7">
+                <Link href="/certificates" className="px-7">
                   <Certificate className="h-4 w-4" />
                   <span>Certificados</span>
                 </Link>

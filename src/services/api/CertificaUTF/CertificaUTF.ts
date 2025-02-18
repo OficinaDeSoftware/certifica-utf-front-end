@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import authProviderEnum from '@/enums/authProvidersEnum'
 import SomethingWentWrongError from '@/types/errors/SomethingWentWrongError'
 import UnauthorizedError from '@/types/errors/UnauthorizedError'
+import { ICertificateParticipant } from '@/types/ICertificate'
 import IEvent, { ISubscribed } from '@/types/IEvent'
 import IResponseHandler from '@/types/IResponseHandler.'
 import IUser from '@/types/IUser'
@@ -304,6 +305,35 @@ export default class CertificaUTF {
     } catch (error) {
       console.error('Erro ao excluir o evento:', error)
       return { sucess: false, error: error }
+    }
+  }
+
+  async getCertificateByParticipant(
+    participantId: string
+  ): Promise<IResponseHandler<Array<ICertificateParticipant>, unknown>> {
+    try {
+      const response = await this.FetchWrapper.get(
+        (process.env.NEXTAUTH_URL as string) +
+          apiEndpointsEnum.CERTIFICATE_PARTICIPANT +
+          `/${participantId}`
+      )
+
+      if (response.status === StatusCodes.OK) {
+        const data = await response.json()
+
+        return { sucess: data, error: null }
+      }
+
+      if (response.status === StatusCodes.UNAUTHORIZED) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para realizar esta operação'
+        )
+      }
+
+      throw new SomethingWentWrongError('Algo deu errado')
+    } catch (error) {
+      console.log(error)
+      return { sucess: null, error: error }
     }
   }
 }

@@ -38,7 +38,6 @@ export async function apiFetch<T>(
   return response
 }
 
-// Agora podemos chamar a função de maneira mais flexível:
 export async function getCertificatesService() {
   return apiFetch<Array<ICertificate>>(apiEndpointsEnum.CERTIFICATE_FIND_ALL)
 }
