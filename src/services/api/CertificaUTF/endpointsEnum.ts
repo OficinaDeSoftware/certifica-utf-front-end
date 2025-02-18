@@ -5,6 +5,7 @@ const apiEndpointsEnum = {
   EVENT_CREATE: '/api/event',
   EVENT_DELETE: '/api/event',
   POST_IMAGE: '/api/resources/upload',
+  SUBSCRIBE_PARTICIPANT: '/api/event/participant',
 }
 
 export default apiEndpointsEnum

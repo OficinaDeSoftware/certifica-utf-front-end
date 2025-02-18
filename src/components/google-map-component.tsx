@@ -46,6 +46,42 @@ const GoogleMapComponent = ({
     [markerPosition, center]
   )
 
+  const updateMarker = useCallback(
+    (position: { lat: number; lng: number }) => {
+      if (markerRef.current) {
+        markerRef.current.map = null
+      }
+
+      if (map) {
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+          map,
+          position,
+          gmpDraggable: true,
+        })
+
+        markerRef.current = marker
+
+        marker.addListener('dragend', (event: google.maps.MapMouseEvent) => {
+          if (event.latLng) {
+            const newLocation = {
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng(),
+            }
+            setMarkerPosition(newLocation)
+            onLocationSelect?.(newLocation.lat, newLocation.lng)
+          }
+        })
+      }
+    },
+    [map, onLocationSelect]
+  )
+
+  useEffect(() => {
+    if (isLoaded && map) {
+      updateMarker(markerPosition || center)
+    }
+  }, [isLoaded, map, markerPosition, center, updateMarker])
+
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
       const newLocation = { lat: event.latLng.lat(), lng: event.latLng.lng() }
@@ -61,35 +97,6 @@ const GoogleMapComponent = ({
   const onUnmount = useCallback(() => {
     setMap(null)
   }, [])
-
-  useEffect(() => {
-    if (isLoaded && map && markerPosition) {
-      const marker = new google.maps.marker.AdvancedMarkerElement({
-        map,
-        position: markerPosition,
-        gmpDraggable: true,
-      })
-
-      markerRef.current = marker
-
-      marker.addListener('dragend', (event: google.maps.MapMouseEvent) => {
-        if (event.latLng) {
-          const newLocation = {
-            lat: event.latLng.lat(),
-            lng: event.latLng.lng(),
-          }
-          setMarkerPosition(newLocation)
-          onLocationSelect?.(newLocation.lat, newLocation.lng)
-        }
-      })
-
-      return () => {
-        if (markerRef.current) {
-          markerRef.current.map = null
-        }
-      }
-    }
-  }, [isLoaded, map, markerPosition])
 
   useEffect(() => {
     if (isLoaded && searchInputRef.current) {
@@ -124,7 +131,7 @@ const GoogleMapComponent = ({
         google.maps.event.removeListener(placeChangedListener)
       }
     }
-  }, [isLoaded, map])
+  }, [isLoaded, map, onLocationSelect])
 
   if (loadError) {
     return (

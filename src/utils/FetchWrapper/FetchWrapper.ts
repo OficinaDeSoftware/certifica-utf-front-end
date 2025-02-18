@@ -12,12 +12,10 @@ export default class FetchWrapper {
   }
 
   async get(url: string) {
-    console.log('ola', url)
     const response = await fetch(`${url}`, {
       method: 'GET',
       headers: this.getHeaders(),
     })
-    console.log('olhjaaa', response)
     return response
   }
 

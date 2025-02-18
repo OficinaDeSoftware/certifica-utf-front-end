@@ -1,3 +1,5 @@
+import eventStatusEnum from '@/enums/eventStatusEnum'
+
 export default interface IEvent {
   id: string
   name: string
@@ -9,6 +11,9 @@ export default interface IEvent {
   backgroundImage: IBackgroundImage
   location: IEventLocation
   certificate: IEventCertificate
+  nrUuidResponsible: string
+  participantsCount: number
+  status: eventStatusEnum
 }
 
 export interface IEventLocation {
@@ -41,4 +46,8 @@ export interface IEventResponsible {
 export interface IBackgroundImage {
   file?: File
   url?: string
+}
+
+export interface ISubscribed {
+  subscribed: boolean
 }

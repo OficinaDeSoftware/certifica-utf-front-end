@@ -6,7 +6,6 @@ interface EventMapProps {
 }
 
 export default function EventMap({ latitude, longitude }: EventMapProps) {
-  console.log(latitude, longitude)
   return (
     <div>
       <h2 className="mb-4 text-lg font-semibold">Localização</h2>

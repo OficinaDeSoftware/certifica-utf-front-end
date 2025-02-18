@@ -22,7 +22,9 @@ export async function EventCard({ event }: EventCardProps) {
         />
         <div className="space-y-2">
           <CardHeader className="p-0">
-            <div className="text-sm text-muted-foreground">{'<Tag>'}</div>
+            <div className="text-sm text-muted-foreground">
+              {event.participantsCount} participantes
+            </div>
             <h3 className="font-semibold">{event.name}</h3>
           </CardHeader>
           <CardContent className="p-0">
