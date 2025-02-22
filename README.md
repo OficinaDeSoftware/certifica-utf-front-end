@@ -29,3 +29,7 @@ bun dev
 |`NEXTAUTH_SECRET`|**Obrigatório**. Secret utilizado para geração do token quando logado com credentials |
 |`NEXT_PUBLIC_API_BASE_URL`|**Obrigatório**. A chave da API backend CertificaUTF  |
 |`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`|**Obrigatório**. A chave da API para integração com o google maps |
+
+## Documentação 
+
+Algumas imagens do podem ser encontradas na pasta `documentation/images`
