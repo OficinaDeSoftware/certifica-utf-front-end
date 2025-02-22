@@ -32,4 +32,4 @@ bun dev
 
 ## Documentação 
 
-Algumas imagens do podem ser encontradas na pasta `documentation/images`
+Algumas imagens podem ser encontradas na pasta `documentation/images`
